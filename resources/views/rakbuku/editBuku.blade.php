@@ -6,27 +6,32 @@
             </a>
         </x-slot>
 
+        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+        <a class="underline text-sm ml-3 text-gray-600 hover:text-gray-900" href="{{  route('rakbuku.index') }}">
+            {{ __('Kembali') }}
+        </a>
 
         <form method="POST" action="{{ url('rakbuku/'. $editbuku->id) }}" enctype="multipart/form-data">
             @csrf
             <!-- Email Address -->
+            <x-label class="text-3xl text-center mb-3" for="email" :value="__('Edit Buku')" />
             <input type="hidden" name="_method" value="patch">
             <div>
-                <x-label for="email" :value="__('Nama Buku')" />
+                <x-label class="mt-3" for="email" :value="__('Nama Buku')" />
 
                 <x-input class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="text" value="{{ $editbuku->nama_buku }}" name="buku"/>
             </div>
 
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Tahun Terbit')" />
+                <x-label class="mt-3" for="email" :value="__('Tahun Terbit')" />
 
                 <x-input class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="text" value="{{ $editbuku->tahun_terbit }}" name="tahun"/>
             </div>
 
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Jenis Buku')" />
+                <x-label class="mt-3" for="email" :value="__('Jenis Buku')" />
 
                 <select class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="jenis">
                     <option value="1">Sejarah</option>
@@ -37,7 +42,7 @@
 
             <!-- Email Address -->
             <div>
-                <x-label for="email" :value="__('Upload Gambar')" />
+                <x-label class="mt-3" for="email" :value="__('Upload Gambar')" />
 
                 <x-input class="block mt-1 w-full" type="file" name="gambar"/>
             </div>

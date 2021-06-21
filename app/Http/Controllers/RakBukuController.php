@@ -7,6 +7,7 @@ use App\Models\RakBukuModel;
 use Facade\FlareClient\Stacktrace\File as StacktraceFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Validator;
 
 class RakBukuController extends Controller
 {
@@ -39,12 +40,17 @@ class RakBukuController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'gambar' => 'required|file|image|mimes:jpeg,png,jpg',
+            'buku' => 'required|min:3',
+            'tahun' => 'required|integer'
+        ]);
         // encrypte file in form input as enctype="multipart/form-data"
         $file = $request->file('gambar');
-        $nama_file = time()."_".$file->getClientOriginalName();
+        $nama_file = time() . "_" . $file->getClientOriginalName();
 
         //$save_upload = 'data_file';
-        $file->move(\base_path()."/public/images", $nama_file);
+        $file->move(\base_path() . "/public/images", $nama_file);
 
 
         $bukuId = BukuModel::create([
@@ -80,7 +86,7 @@ class RakBukuController extends Controller
     public function edit($id)
     {
         $rakBuku = BukuModel::select('*')->find($id);
-        return view('rakbuku.editBuku', ['editbuku'=>$rakBuku]);
+        return view('rakbuku.editBuku', ['editbuku' => $rakBuku]);
     }
 
     /**
@@ -92,15 +98,21 @@ class RakBukuController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'gambar' => 'required|file|image|mimes:jpeg,png,jpg',
+            'buku' => 'required|min:3',
+            'tahun' => 'required|integer'
+        ]);
+
         $rakBuku = BukuModel::select('*')->find($id);
-        $rakBuku->nama_buku = $request->buku ?? "";
-        $rakBuku->tahun_terbit = $request->tahun ?? "";
+        $rakBuku->nama_buku = $request->buku;
+        $rakBuku->tahun_terbit = $request->tahun;
 
         $file = $request->file('gambar');
-        $nama_file = time()."_".$file->getClientOriginalName();
+        $nama_file = time() . "_" . $file->getClientOriginalName();
 
         //$save_upload = 'data_file';
-        $file->move(\base_path()."/public/images", $nama_file);
+        $file->move(\base_path() . "/public/images", $nama_file);
 
 
         $rakBuku->gambar_buku = $nama_file ?? "";
@@ -121,16 +133,15 @@ class RakBukuController extends Controller
     public function destroy($id)
     {
         $rakBuku1 = BukuModel::select('*')->find($id);
-        File::delete('images/'.$rakBuku1->gambar_buku);
+        File::delete('images/' . $rakBuku1->gambar_buku);
 
         $rakBuku1->delete();
 
-        $rakBuku1 = RakBukuModel::select('*', 'rak_buku.id_buku AS idBuku')->find($id);
-        $rakBuku1->delete();
+        $rakBuku2 = RakBukuModel::select('*', 'rak_buku.id_buku AS idBuku')->find($id);
+        $rakBuku2->delete();
 
 
 
         return redirect('rakbuku');
-
     }
 }

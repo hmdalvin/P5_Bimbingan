@@ -20,17 +20,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['middleware' => 'auth'], function() {
-    Route::get('/dashboard', function () {
+Route::group(['middleware' => 'auth'], function () {
+
+
+    Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/laporan/pdf', [LaporanController::class,'generate']);
-    Route::resource('rakbuku', RakBukuController::class);
-    Route::resource('laporan', LaporanController::class);
+    Route::middleware(['admin'])->group(function () {
+        Route::get('admin', [AdminController::class, 'index']);
+        Route::get('/laporan/pdf', [LaporanController::class, 'generate']);
+        Route::resource('rakbuku', RakBukuController::class);
+    });
 
+    Route::get('user', [UserController::class, 'index']);
+    Route::get('/laporan/pdf', [LaporanController::class, 'generate']);
+    Route::resource('laporan', LaporanController::class);
 });
 
-require __DIR__.'/auth.php';
-
-
+require __DIR__ . '/auth.php';
